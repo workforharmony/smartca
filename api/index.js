@@ -35,7 +35,9 @@ export default async function handler(req, res) {
         });
 
         let data = await gptResponse.json();
-        let reply = data.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
+        console.log("OpenAI Response:", data); // Debugging logs
+
+        let reply = data.choices && data.choices.length > 0 ? data.choices[0].message.content : "Sorry, I couldn't generate a response.";
 
         res.json({ reply });
     } catch (error) {
