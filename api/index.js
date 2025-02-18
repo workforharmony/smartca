@@ -18,30 +18,21 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Call SmartCA GPT API
-        let gptResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        // Call SmartCA GPT's Action API
+        let gptResponse = await fetch("https://smartca-backend.vercel.app/api/", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer YOUR_OPENAI_API_KEY` // Replace with your OpenAI API Key
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                model: "gpt-4",
-                messages: [
-                    { role: "system", content: `You are SmartCA GPT, an AI financial assistant specializing in '${area}'.` },
-                    { role: "user", content: message }
-                ]
-            })
+            body: JSON.stringify({ message, area })
         });
 
         let data = await gptResponse.json();
-        console.log("OpenAI Response:", data); // Debugging logs
-
-        let reply = data.choices && data.choices.length > 0 ? data.choices[0].message.content : "Sorry, I couldn't generate a response.";
+        let reply = data.reply || "Sorry, I couldn't generate a response.";
 
         res.json({ reply });
     } catch (error) {
-        console.error("Error talking to GPT:", error);
+        console.error("Error talking to SmartCA GPT:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 }
